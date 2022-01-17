@@ -32,6 +32,7 @@ Multiplexer *initMultiplexer(GPIO_TypeDef *GPIOx, uint32_t dataS0, uint32_t data
     mux->dataS3 = dataS3;
     mux->enablePin = enablePin;
     mux->signalPin = signalPin;
+    mux->selectedChannel = -1;
 
     if (signalPin != 0) {
         LL_GPIO_ResetOutputPin(GPIOx, signalPin);
@@ -63,14 +64,16 @@ void writeMultiplexer(Multiplexer *mux, MultiplexerChannel channel, MultiplexerV
 }
 
 void setMultiplexerChannel(Multiplexer *mux, MultiplexerChannel channel) {
-    if (mux == NULL) return;
-    uint32_t pinMask = 0;
-    uint8_t muxValue = MUX_TRUTH_TABLE[channel];
-    pinMask |= (BIT_READ(muxValue, 3) ? mux->dataS0 : mux->dataS0 << 16);
-    pinMask |= (BIT_READ(muxValue, 2) ? mux->dataS1 : mux->dataS1 << 16);
-    pinMask |= (BIT_READ(muxValue, 1) ? mux->dataS2 : mux->dataS2 << 16);
-    pinMask |= (BIT_READ(muxValue, 0) ? mux->dataS3 : mux->dataS3 << 16);
-    LL_GPIO_SetOutputPin(mux->GPIOx, pinMask);
+    if (mux != NULL && mux->selectedChannel != channel) {
+        uint32_t pinMask = 0;
+        uint8_t muxValue = MUX_TRUTH_TABLE[channel];
+        pinMask |= (BIT_READ(muxValue, 3) ? mux->dataS0 : mux->dataS0 << 16);
+        pinMask |= (BIT_READ(muxValue, 2) ? mux->dataS1 : mux->dataS1 << 16);
+        pinMask |= (BIT_READ(muxValue, 1) ? mux->dataS2 : mux->dataS2 << 16);
+        pinMask |= (BIT_READ(muxValue, 0) ? mux->dataS3 : mux->dataS3 << 16);
+        LL_GPIO_SetOutputPin(mux->GPIOx, pinMask);
+        mux->selectedChannel = channel;
+    }
 }
 
 void deleteMultiplexer(Multiplexer *mux) {

@@ -40,6 +40,7 @@ typedef struct Multiplexer {
     uint32_t dataS3;
     uint32_t enablePin;
     uint32_t signalPin;
+    MultiplexerChannel selectedChannel;
 } Multiplexer;
 
 
