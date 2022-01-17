@@ -2,6 +2,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "main.h"
 
 #define CD74HC4067_CHANNEL_COUNT 16
@@ -41,8 +43,9 @@ typedef struct Multiplexer {
 } Multiplexer;
 
 
-Multiplexer initMultiplexer(GPIO_TypeDef *GPIOx, uint32_t dataS0, uint32_t dataS1, uint32_t dataS2, uint32_t dataS3, uint32_t enablePin, uint32_t signalPin);
+Multiplexer *initMultiplexer(GPIO_TypeDef *GPIOx, uint32_t dataS0, uint32_t dataS1, uint32_t dataS2, uint32_t dataS3, uint32_t enablePin, uint32_t signalPin);
 
 void setEnableMultiplexer(Multiplexer *mux, bool isEnabled);
 void writeMultiplexer(Multiplexer *mux, MultiplexerChannel channel, MultiplexerValue value);    // set signal pin to high or low level
 void setMultiplexerChannel(Multiplexer *mux, MultiplexerChannel channel);
+void deleteMultiplexer(Multiplexer *mux);

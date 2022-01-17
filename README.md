@@ -37,27 +37,27 @@ file(GLOB_RECURSE SOURCES ${CD74HC4067_SOURCES}) # add source files
 
 ***LED with multiplexer***
 ```c
-    Multiplexer mux = initMultiplexer(GPIOA, MUX_S0_Pin, MUX_S1_Pin, MUX_S2_Pin, MUX_S3_Pin, MUX_ENABLE_Pin, MUX_SIGNAL_Pin);
-    setEnableMultiplexer(&mux, true);   // by default disabled
+    Multiplexer *mux = initMultiplexer(GPIOA, MUX_S0_Pin, MUX_S1_Pin, MUX_S2_Pin, MUX_S3_Pin, MUX_ENABLE_Pin, MUX_SIGNAL_Pin);
+    setEnableMultiplexer(mux, true);   // by default disabled
 
     while (1) {
-        writeMultiplexer(&mux, MUX_CHANNEL_0, MUX_HIGH);
+        writeMultiplexer(mux, MUX_CHANNEL_0, MUX_HIGH);
         for (MultiplexerChannel i = MUX_CHANNEL_0; i < MUX_CHANNEL_15; i++) {
             LL_mDelay(100);
-            writeMultiplexer(&mux, i, MUX_LOW);
-            writeMultiplexer(&mux, i + 1, MUX_HIGH);
+            writeMultiplexer(mux, i, MUX_LOW);
+            writeMultiplexer(mux, i + 1, MUX_HIGH);
         }
 
         LL_mDelay(100);
-        writeMultiplexer(&mux, MUX_CHANNEL_15, MUX_LOW);
+        writeMultiplexer(mux, MUX_CHANNEL_15, MUX_LOW);
     }
 }
 ```
 
 ***Input data***
 ```c
-    Multiplexer mux = initMultiplexer(GPIOA, MUX_S0_Pin, MUX_S1_Pin, MUX_S2_Pin, MUX_S3_Pin, MUX_ENABLE_Pin, 0);
-    setEnableMultiplexer(&mux, true);
-    setMultiplexerChannel(&mux, MUX_CHANNEL_1); // select channel
+    Multiplexer *mux = initMultiplexer(GPIOA, MUX_S0_Pin, MUX_S1_Pin, MUX_S2_Pin, MUX_S3_Pin, MUX_ENABLE_Pin, 0);
+    setEnableMultiplexer(mux, true);
+    setMultiplexerChannel(mux, MUX_CHANNEL_1); // select channel
     uint32_t adcValue = readADC();  // use signal value
 ```

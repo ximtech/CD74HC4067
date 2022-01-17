@@ -22,15 +22,16 @@ static const uint8_t MUX_TRUTH_TABLE[CD74HC4067_CHANNEL_COUNT] = {
 };
 
 
-Multiplexer initMultiplexer(GPIO_TypeDef *GPIOx, uint32_t dataS0, uint32_t dataS1, uint32_t dataS2, uint32_t dataS3, uint32_t enablePin, uint32_t signalPin) {
-    Multiplexer mux = {0};
-    mux.GPIOx = GPIOx;
-    mux.dataS0 = dataS0;
-    mux.dataS1 = dataS1;
-    mux.dataS2 = dataS2;
-    mux.dataS3 = dataS3;
-    mux.enablePin = enablePin;
-    mux.signalPin = signalPin;
+Multiplexer *initMultiplexer(GPIO_TypeDef *GPIOx, uint32_t dataS0, uint32_t dataS1, uint32_t dataS2, uint32_t dataS3, uint32_t enablePin, uint32_t signalPin) {
+    Multiplexer *mux = malloc(sizeof(struct Multiplexer));
+    if (mux == NULL) return NULL;
+    mux->GPIOx = GPIOx;
+    mux->dataS0 = dataS0;
+    mux->dataS1 = dataS1;
+    mux->dataS2 = dataS2;
+    mux->dataS3 = dataS3;
+    mux->enablePin = enablePin;
+    mux->signalPin = signalPin;
 
     if (signalPin != 0) {
         LL_GPIO_ResetOutputPin(GPIOx, signalPin);
@@ -51,7 +52,7 @@ void setEnableMultiplexer(Multiplexer *mux, bool isEnabled) {
 }
 
 void writeMultiplexer(Multiplexer *mux, MultiplexerChannel channel, MultiplexerValue value) {
-    if (mux->signalPin != 0) {
+    if (mux != NULL && mux->signalPin != 0) {
         setMultiplexerChannel(mux, channel);
         if (value == MUX_HIGH) {
             LL_GPIO_SetOutputPin(mux->GPIOx, mux->signalPin);
@@ -62,6 +63,7 @@ void writeMultiplexer(Multiplexer *mux, MultiplexerChannel channel, MultiplexerV
 }
 
 void setMultiplexerChannel(Multiplexer *mux, MultiplexerChannel channel) {
+    if (mux == NULL) return;
     uint32_t pinMask = 0;
     uint8_t muxValue = MUX_TRUTH_TABLE[channel];
     pinMask |= (BIT_READ(muxValue, 3) ? mux->dataS0 : mux->dataS0 << 16);
@@ -69,4 +71,8 @@ void setMultiplexerChannel(Multiplexer *mux, MultiplexerChannel channel) {
     pinMask |= (BIT_READ(muxValue, 1) ? mux->dataS2 : mux->dataS2 << 16);
     pinMask |= (BIT_READ(muxValue, 0) ? mux->dataS3 : mux->dataS3 << 16);
     LL_GPIO_SetOutputPin(mux->GPIOx, pinMask);
+}
+
+void deleteMultiplexer(Multiplexer *mux) {
+    free(mux);
 }
