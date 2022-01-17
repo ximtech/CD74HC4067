@@ -30,9 +30,8 @@ file(GLOB_RECURSE SOURCES ${CD74HC4067_SOURCES}) # add source files
 
 ### Wiring
 
-- <img src="https://github.com/ximtech/CD74HC4067/blob/main/example/wiring.png" alt="image" width="300"/>
-- <img src="https://github.com/ximtech/CD74HC4067/blob/main/example/pin_config.png" alt="image" width="300"/>
-- <img src="https://github.com/ximtech/CD74HC4067/blob/main/example/pin_config2.png" alt="image" width="300"/>
+- <img src="https://github.com/ximtech/CD74HC4067/blob/main/example/wiring.PNG" alt="image" width="300"/>
+- <img src="https://github.com/ximtech/CD74HC4067/blob/main/example/pin_config2.PNG" alt="image" width="300"/>
 
 ### Usage
 
